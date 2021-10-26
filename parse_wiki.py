@@ -1,34 +1,10 @@
 from xml.sax import make_parser, handler
-from sql_service import insert_ambiguity
-from textprocess import textprocess
+from sql_service import SqlService
+import page_class, sys
 
-class Page:
-    def __init__(self):
-        self.title = ""
-        self.text = ""
-        self.doublebrace_depth = 0
-        self.bracepipe_depth = 0
+sql = SqlService()
 
-    def acceptText(self, t):
-        t = t.replace("{{", u"\u9999") # just random unicode to merge {{ and }}
-        t = t.replace("}}", u"\u9998")
-        t = t.replace("{{", u"\u9997") # just random unicode to merge {| and |}
-        t = t.replace("}}", u"\u9996")
-        for c in t: # remove nested {{ ... }} from text
-            if(c == u"\u9999"): self.doublebrace_depth = self.doublebrace_depth+1
-            if(c == u"\u9997"): self.bracepipe_depth = self.bracepipe_depth+1
-            if(self.doublebrace_depth == 0 and self.bracepipe_depth == 0): self.text = self.text + c
-            if(c == u"\u9998"): self.doublebrace_depth = self.doublebrace_depth-1
-            if(c == u"\u9996"): self.bracepipe_depth = self.bracepipe_depth-1
-
-    def done(self):
-        textprocess(self.text)
-        self.save()
-
-    def save(self):
-        print(self.title)
-        print(len(self.text)) # SQL
-
+### Page SAX-Handler ###
 class PageHandler(handler.ContentHandler):
     tagsToWatch = ["title", "text"]
 
@@ -38,13 +14,13 @@ class PageHandler(handler.ContentHandler):
     def startElement(self, name, attrs): # set currentTag on enter or create page
 
         if(name == "page"):
-            self.currentPage = Page() # create blank page object
+            self.currentPage = page_class.Page() # create blank page object
 
         if(name in self.tagsToWatch):
             self.currentTag = name # set current Tag
 
         if(name == "redirect"): # handle disambiguition on auto redirect pages
-            insert_ambiguity(attrs.get("title"), self.currentPage.title, 'redirect')
+            sql.insert_ambiguity(attrs.get("title"), self.currentPage.title, 'redirect')
             del self.currentPage
 
         return super().startElement(name, attrs)
@@ -56,8 +32,8 @@ class PageHandler(handler.ContentHandler):
             return super().endElement(name)
 
         if(name == "page"): # page is done
-            if(input("process " + self.currentPage.title + "?") == "p"):
-                self.currentPage.done()
+            #if(input("process " + self.currentPage.title + "?") == "p"):
+            self.currentPage.done()
             del self.currentPage
 
         if(name in self.tagsToWatch): # unset current Tag
@@ -77,7 +53,7 @@ class PageHandler(handler.ContentHandler):
 
         return super().characters(content)
 
-
+### init ###
 parser = make_parser()
 parser.setContentHandler(PageHandler())
-parser.parse("enwiki-latest-pages-articles-multistream000.xml")
+parser.parse(sys.argv[1])
