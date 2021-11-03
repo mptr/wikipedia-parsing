@@ -18,6 +18,6 @@ def replace_with_padded_number(f): # en...istream1.xml-..z2 -> en...istream001.x
     return re.sub(number_regex, ("%03d" % number) + ".xml", f)
 
 for h in hrefs:
-    filename = replace_with_padded_number(h)
+    filename = "./ssd/" + replace_with_padded_number(h)
     print("donloading " + h)
     wget.download(baseUrl + h, out=filename)

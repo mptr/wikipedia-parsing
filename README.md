@@ -6,15 +6,17 @@
 ## Requirements
 
 - PG-Database
-- `$ pip3 install psycopg2-binary`
+- `pip3 install psycopg2-binary orator requests wget spacy`
+- `python -m spacy download en_core_web_lg`
 
-## Dev-Database
+## Run the Dev-Database
 
-```
-$ docker-compose up -d
-```
+Start Containers: `docker-compose up -d`
+
+Run Migrations: `orator migrate -c db.py`
 
 ## Avtivate venv
-```
-$ source .env/bin/activate
-```
+
+create: `python3 -m venv .venv`
+
+avtivate: `source .venv/bin/activate`
