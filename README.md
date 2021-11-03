@@ -6,7 +6,7 @@
 ## Requirements
 
 - PG-Database
-- `pip3 install psycopg2-binary orator requests wget spacy`
+- `pip3 install psycopg2-binary sqlalchemy requests wget spacy`
 - `python -m spacy download en_core_web_lg`
 
 ## Run the Dev-Database
