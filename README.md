@@ -6,7 +6,7 @@
 ## Requirements
 
 - PG-Database
-- `pip3 install psycopg2-binary sqlalchemy requests wget spacy`
+- `pip install psycopg2-binary sqlalchemy requests wget spacy`
 - `python -m spacy download en_core_web_lg`
 
 ## Run the Dev-Database
@@ -21,6 +21,6 @@ ___
 
 ## Avtivate venv
 
-create: `python3 -m venv .venv`
+create: `python -m venv .venv`
 
 avtivate: `source .venv/bin/activate`

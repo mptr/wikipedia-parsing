@@ -4,7 +4,7 @@ from models import *
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=True)
+engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
 

@@ -3,7 +3,7 @@ from .Article import Article
 
 from models import *
 from sqlalchemy.orm import sessionmaker
-engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=True)
+engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -35,8 +35,8 @@ class PageHandler(handler.ContentHandler):
             return super().endElement(name)
 
         if name == "page": # page is done
-            if(input("process " + self.currentPage.title + "? [y/N]") == "y"):
-                self.currentPage.done()
+            #if(input("process " + self.currentPage.title + "? [y/N]") == "y"):
+            self.currentPage.done()
             del self.currentPage
 
         if name in self.tagsToWatch: # unset current Tag
