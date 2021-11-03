@@ -1,10 +1,12 @@
 import re, sys, spacy
-from models.ambiguity import Ambiguity
-from models.entity import Entity
-from models.token import Token
 from util.textprocess import *
-from models.page import Page
-from models.sentence import Sentence
+from models import *
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=True)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 spacy.prefer_gpu()
 nlp = spacy.load("en_core_web_lg")
@@ -62,32 +64,34 @@ class Article:
         self.text, self.ambigs = find_links(self.text)
 
     def save(self):
-        p = Page.create(title=self.title, wikidata_id=self.wikidata_id)
-        p.ambiguities().save_many([
+        p = Page(title=self.title, wikidata_id=self.wikidata_id)
+        p.ambiguities = [
             Ambiguity(
                 base=a['base'],
                 alt=a['alt'],
                 kind='link'
             ) for a in self.ambigs
-        ])
+        ]
 
         doc = nlp(self.text)
         for i,sent in enumerate(doc.sents):
             s = Sentence(pos = i)
-            p.sentences().save(s)
-            s.entities().save_many([
+            p.sentences.append(s)
+            s.entities = [
                 Entity(
                     start=e.start,
                     end=e.end,
                     content=e.text,
                     kind=e.label_
                 ) for e in sent.ents
-            ])
-            s.tokens().save_many([
+            ]
+            s.tokens = [
                 Token(
                     pos=j,
                     content=t.text
                 ) for j,t in enumerate(sent)
-            ])
+            ]
+        session.add(p)
+        session.commit()
 
 

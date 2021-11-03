@@ -1,6 +1,11 @@
 from xml.sax import handler
 from .Article import Article
-from models.ambiguity import Ambiguity
+
+from models import *
+from sqlalchemy.orm import sessionmaker
+engine = create_engine(os.environ['PSQL_CONNECT_URL'], echo=True)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 class PageHandler(handler.ContentHandler):
     tagsToWatch = ["title", "text"]
@@ -17,7 +22,8 @@ class PageHandler(handler.ContentHandler):
             self.currentTag = name # set current Tag
 
         if name == "redirect": # handle disambiguition on auto redirect pages
-            Ambiguity.create(base=attrs.get("title"), alt=self.currentPage.title, kind='redirect')
+            session.add(Ambiguity(base=attrs.get("title"), alt=self.currentPage.title, kind='redirect'))
+            session.commit()
             del self.currentPage
 
         return super().startElement(name, attrs)

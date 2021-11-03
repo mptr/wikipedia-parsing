@@ -13,7 +13,11 @@
 
 Start Containers: `docker-compose up -d`
 
-Run Migrations: `orator migrate -c db.py`
+Export Connect URL: `export PSQL_CONNECT_URL=postgresql://postgres:changeme@localhost:5432/postgres`
+
+Run Migrations: `python models.py`
+
+___
 
 ## Avtivate venv
 
