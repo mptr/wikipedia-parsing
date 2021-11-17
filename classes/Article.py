@@ -92,6 +92,9 @@ class Article:
                 ) for j,t in enumerate(sent)
             ]
         session.add(p)
-        session.commit()
-
+        try:
+            session.commit()
+        except Exception as e:
+            print(e)
+            session.rollback()
 

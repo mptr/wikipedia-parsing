@@ -29,7 +29,7 @@ class Entity(Base):
 class Page(Base):
     __tablename__ = 'pages'
     id = Column(Integer, primary_key=True)
-    title = Column(String)
+    title = Column(String, unique=True)
     wikidata_id = Column(String)
     sentences = relationship("Sentence")
     ambiguities = relationship("Ambiguity")
