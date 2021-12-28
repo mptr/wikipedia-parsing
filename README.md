@@ -1,5 +1,11 @@
 # Wikipedia parsing
 
+## self-hosted Wikidata
+
+See [blazegraph](blazegraph) directory.
+
+## Parsing text dumps with spacy
+
 1. Download the xml-Files with `fetch_index.py`
 2. Run `parse_wiki.py <filename>.xml`
 (To parse many files use `batchstart.sh`)
