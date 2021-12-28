@@ -2,6 +2,7 @@
 
 1. Download the xml-Files with `fetch_index.py`
 2. Run `parse_wiki.py <filename>.xml`
+(To parse many files use `batchstart.sh`)
 
 ## Requirements
 
